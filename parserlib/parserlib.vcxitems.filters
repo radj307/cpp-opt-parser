@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)format-argv.hpp">
+      <Filter>Opt Parser\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)parser.hpp">
+      <Filter>Opt Parser\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VariantArgument.hpp">
+      <Filter>Opt Parser\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Params.hpp">
+      <Filter>Opt Parser</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Opt Parser">
+      <UniqueIdentifier>{f37ae822-4928-422c-9319-681c0c82ad2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Opt Parser\Internal">
+      <UniqueIdentifier>{01b66c35-8b83-4663-849f-ff4aa4c16b80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
