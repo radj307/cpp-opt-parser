@@ -1,10 +1,19 @@
+/**
+ * @file Params.hpp
+ * @author radj307
+ * @brief This is the main file to include if you want to use this lib.
+ *\n	_USAGE_:
+ *\n		Simply define an instance of opt::Params() in main and pass the argc & argv parameters to it.
+ *\n		It will then convert the arguments to a vector, and parse them using parseArgs function.
+ *\n		You can also include an optional "capture list" (vector<string>).
+ *\n		Include the name of options or flags here (excluding prefix delimiters) to indicate that they should "capture" the following parameter when possible.
+ *\n		If you choose to
+ */
 #pragma once
 #include "format-argv.hpp"
-#include "parser.hpp"
+#include "parseArgs.hpp"
 
 namespace opt {
-	using ContainerType = std::vector<VariantArgument>;
-
 	class Params {
 		ContainerType _args;
 
@@ -15,7 +24,7 @@ namespace opt {
 		 * @param argv			- Argument array.
 		 * @param parse_config	- Parsing configuration values.
 		 */
-		explicit Params(const int argc, char** argv, const ParseConfig& parse_config) : _args{ parseArgs(vectorize(argc, argv), parse_config) } {}
+		explicit Params(const int argc, char** argv, const ParserConfig& parse_config) : _args{ parseArgs(vectorize(argc, argv), parse_config) } {}
 		explicit Params(const int argc, char** argv, const std::vector<std::string>& capture_list) : _args{ parseArgs(vectorize(argc, argv), capture_list) } {}
 		explicit Params(ContainerType cont) : _args{ std::move(cont) } {}
 

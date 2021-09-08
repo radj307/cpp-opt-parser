@@ -1,4 +1,5 @@
 #include <TermAPI.hpp>
+#include <optlib.hpp>
 
 #include "format-argv.hpp"
 #include "Params.hpp"
@@ -10,13 +11,11 @@ int main(const int argc, char** argv, char** envp)
 	try {
 		std::cout << sys::term::EnableANSI;
 
-		std::vector<std::string> pseudo_args{ "-z", "flag-capture", "--extra-dash-chars", "hello", "--opt", "world"};
-		std::vector<std::string> capture_args{ "z", "extra-dash-chars"};
 
-		const auto cont{ parseArgs(pseudo_args, capture_args) };
-
-		const auto argcont{ ArgContainer(cont) };
-		const auto argcont1{ ArgContainer{ argc, argv, { "z", "extra-dash-chars"}}};
+		const auto params{ Params(argc, argv, { "opt", "f"})};
+		const auto param{ Param(argc, argv, Matcher{ { 'f' }, {{"opt", true}}}) };
+		sizeof(params);
+		sizeof(param);
 
 
 		return 0;
