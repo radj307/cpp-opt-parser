@@ -9,11 +9,11 @@ namespace opt {
 	 * @param arr	- Array
 	 * @returns std::vector<std::string>
 	 */
-	inline std::vector<std::string> vectorize(const int size, char** arr)
+	inline std::vector<std::string> vectorize(const int size, char** arr, const int off = 1)
 	{
 		std::vector<std::string> vec;
 		vec.reserve(size); // reserve some space
-		for (auto i{ 0 }; i < size; ++i)
+		for (auto i{ off }; i < size; ++i)
 			vec.emplace_back(arr[i]);
 		vec.shrink_to_fit(); // shrink to size
 		return vec;

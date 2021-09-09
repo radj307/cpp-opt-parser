@@ -71,6 +71,25 @@ namespace opt {
 				return get<Option>().first;
 			case Type::FLAG:
 				return std::string(1u, get<Flag>().first);
+			default:
+				return{};
+			}
+		}
+
+		/**
+		 * @brief Check if this argument has a captured parameter.
+		 * @returns bool
+		 */
+		bool hasv() const
+		{
+			switch (_type) {
+			case Type::FLAG:
+				return get<Flag>().second.has_value();
+			case Type::OPTION:
+				return get<Option>().second.has_value();
+			case Type::PARAMETER:[[fallthrough]];
+			default:
+				return false;
 			}
 		}
 
@@ -145,7 +164,19 @@ namespace opt {
 		 */
 		template<class T> std::enable_if_t<std::is_same_v<T, Option>, std::optional<std::string>> getv() const
 		{
-			return get<Flag>().second.value();
+			return get<Option>().second.value();
+		}
+
+		std::optional<std::string> getv() const
+		{
+			switch (_type) {
+			case Type::FLAG:
+				return getv<Flag>();
+			case Type::OPTION:
+				return getv<Option>();
+			default:
+				return{};
+			}
 		}
 
 		/**

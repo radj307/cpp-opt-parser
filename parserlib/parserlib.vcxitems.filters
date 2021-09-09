@@ -4,7 +4,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)format-argv.hpp">
       <Filter>Opt Parser\Internal</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)parser.hpp">
+    <ClInclude Include="$(MSBuildThisFileDirectory)parseArgs.hpp">
       <Filter>Opt Parser\Internal</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)VariantArgument.hpp">
@@ -13,6 +13,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Params.hpp">
       <Filter>Opt Parser</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ParserConfig.hpp">
+      <Filter>Opt Parser\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\optenv.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\resolve-path.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Opt Parser">
