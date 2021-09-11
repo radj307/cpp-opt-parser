@@ -1,3 +1,8 @@
+/**
+ * @file ParserConfig.hpp
+ * @author radj307
+ * @brief	Contains the ParserConfig struct, which exposes configuration options for the parseArgs function.
+ */
 #pragma once
 #include <vector>
 #include <string>

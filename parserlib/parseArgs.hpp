@@ -1,3 +1,8 @@
+/**
+ * @file parseArgs.hpp
+ * @author radj307
+ * @brief	Contains the parseArgs function, used for parsing commandline arguments.
+ */
 #pragma once
 #include <sstream>
 #include <strmanip.hpp>

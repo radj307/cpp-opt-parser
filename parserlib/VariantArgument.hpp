@@ -1,3 +1,8 @@
+/**
+ * @file VariantArgument.hpp
+ * @author radj307
+ * @brief	Contains the VariantArgument struct & methods for manipulating variants. This is used by the parseArgs.hpp header.
+ */
 #pragma once
 #include <iostream>
 #include <string>
