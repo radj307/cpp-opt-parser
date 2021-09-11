@@ -11,6 +11,7 @@
  *\n	This implementation uses 146% less memory than optlib.hpp
  */
 #pragma once
+#include <var.hpp>
 #include "format-argv.hpp"
 #include "parseArgs.hpp"
 
@@ -34,18 +35,19 @@ namespace opt {
 		explicit Params(const int argc, char** argv, const std::vector<std::string>& capture_list) : _args{ parseArgs(vectorize(argc, argv), capture_list) } {}
 		explicit Params(ContainerType cont) : _args{ std::move(cont) } {}
 
-		auto begin() const { return _args.begin(); }
-		auto rbegin() const { return _args.rbegin(); }
-		auto end() const { return _args.end(); }
-		auto rend() const { return _args.rend(); }
-		auto at(const ContainerType::size_type& pos) const { return _args.at(pos); }
-		auto empty() const { return _args.empty(); }
+		auto begin() const -> ContainerType::const_iterator { return _args.begin(); }
+		auto rbegin() const -> ContainerType::const_reverse_iterator { return _args.rbegin(); }
+		auto end() const -> ContainerType::const_iterator { return _args.end(); }
+		auto rend() const -> ContainerType::const_reverse_iterator { return _args.rend(); }
+		auto at(const ContainerType::size_type& pos) const -> VariantArgument { return _args.at(pos); }
+		bool empty() const { return _args.empty(); }
 
+	#pragma region FIND
 		/**
 		 * @brief Retrieve an iterator to the option or parameter with a given name.
 		 * @param arg				- Argument name (or capture name if check_captures) to search for.
 		 * @param off				- The position in the argument vector to begin searching at. Inclusive.
-		 * @param check_captures	- When true, also checks capture values for options, and flags.
+		 * @param check_captures	- When true, also checks capture values for options and flags.
 		 * @returns ContainerType::const_iterator
 		 */
 		ContainerType::const_iterator find(const std::string& arg, ContainerType::const_iterator off, const bool check_captures = false) const
@@ -74,10 +76,25 @@ namespace opt {
 			}
 			return _args.end();
 		}
+
+		/**
+		 * @brief Retrieve an iterator to the option or parameter with a given name.
+		 * @param arg				- Argument name (or capture name if check_captures) to search for.
+		 * @param check_captures	- When true, also checks capture values for options and flags.
+		 * @returns ContainerType::const_iterator
+		 */
 		ContainerType::const_iterator find(const std::string& arg, const bool check_captures = false) const
 		{
 			return find(arg, _args.begin(), check_captures);
 		}
+
+		/**
+		 * @brief Retrieve an iterator to the option or parameter with a given name.
+		 * @param arg				- Argument name (or capture name if check_captures) to search for.
+		 * @param off				- The position in the argument vector to begin searching at. Inclusive.
+		 * @param check_captures	- When true, also checks capture values for options and flags.
+		 * @returns ContainerType::const_iterator
+		 */
 		ContainerType::const_iterator find(const std::string& arg, const size_t off, const bool check_captures = false) const
 		{
 			return find(arg, _args.begin() + off, check_captures);
@@ -85,7 +102,8 @@ namespace opt {
 
 		/**
 		 * @brief Retrieve an iterator to the flag with a given character name.
-		 * @param arg				- Flag name to search for.
+		 * @param arg	- Flag name to search for.
+		 * @param off	- Position to begin searching from. Inclusive.
 		 * @returns ContainerType::const_iterator
 		 */
 		ContainerType::const_iterator find(const char& arg, ContainerType::const_iterator off) const
@@ -104,15 +122,29 @@ namespace opt {
 			}
 			return _args.end();
 		}
+
+		/**
+		 * @brief Retrieve an iterator to the flag with a given character name.
+		 * @param arg	- Flag name to search for.
+		 * @returns ContainerType::const_iterator
+		 */
 		ContainerType::const_iterator find(const char& arg) const
 		{
 			return find(arg, _args.begin());
 		}
+
+		/**
+		 * @brief Retrieve an iterator to the flag with a given character name.
+		 * @param arg	- Flag name to search for.
+		 * @param off	- Position to begin searching from. Inclusive.
+		 * @returns ContainerType::const_iterator
+		 */
 		ContainerType::const_iterator find(const char& arg, const size_t off) const
 		{
 			return find(arg, _args.begin() + off);
 		}
-
+	#pragma endregion FIND
+	#pragma region FINDALL
 		std::vector<ContainerType::const_iterator> findAll(const std::string& arg, const ContainerType::const_iterator& off) const
 		{
 			std::vector<ContainerType::const_iterator> vec;
@@ -149,7 +181,8 @@ namespace opt {
 			vec.shrink_to_fit();
 			return vec;
 		}
-
+	#pragma endregion FINDALL
+	#pragma region CONTAINS
 		/**
 		 * @brief Check if a given argument appears in the argument list.
 		 * @param arg	- String to search for.
@@ -169,6 +202,12 @@ namespace opt {
 			return find(arg) != _args.end();
 		}
 
+		template<class... T> bool contains_any(T... args) const
+		{
+			return var::variadic_or(contains(args)...);
+		}
+	#pragma endregion CONTAINS
+	#pragma region GETTERS
 		/**
 		 * @brief Retrieve all arguments with a given type.
 		 * @tparam T	- Type of argument to retrieve. Accepts Flag, Parameter, or Option.
@@ -223,67 +262,30 @@ namespace opt {
 			return getAllWithType<Parameter>();
 		}
 
+		std::optional<std::string> getv(const std::string& opt, ContainerType::const_iterator off) const
+		{
+			if (off == _args.end())
+				return std::nullopt;
+			const auto it{ find(opt, off + 1) };
+			return it == _args.end() ? std::nullopt : it->getv<Option>();
+		}
+
 		std::optional<std::string> getv(const std::string& opt) const
 		{
-			const auto it{ find(opt) };
+			return getv(opt, _args.begin());
+		}
+
+		std::optional<std::string> getv(const char flag, ContainerType::const_iterator off) const
+		{
+			if (off == _args.end())
+				return std::nullopt;
+			const auto it{ find(flag, off + 1) };
 			return it == _args.end() ? std::nullopt : it->getv<Option>();
 		}
 
 		std::optional<std::string> getv(const char flag) const
 		{
-			const auto it{ find(flag) };
-			return it == _args.end() ? std::nullopt : it->getv<Option>();
-		}
-
-		/**
-		 * @brief Check if a given argument was included, regardless of its type.
-		 * @param arg	- Argument name to search for, not including any prefix dashes if applicable.
-		 * @returns bool
-		 */
-		bool check(auto&& arg) const
-		{
-			return contains(std::forward<decltype(arg)>(arg));
-		}
-
-		/**
-		 * @brief Check if a given argument was included, and has type Option.
-		 * @param opt	- Option name to search for, not including the prefix dashes.
-		 * @returns bool
-		 */
-		bool check_opt(const std::string& opt) const
-		{
-			const auto it{ find(opt) };
-			return it != _args.end() && *it == Type::OPTION;
-		}
-
-		/**
-		 * @brief Check if a given argument was included, and has type Flag.
-		 * @param flag	- Flag char to search for.
-		 * @returns bool
-		 */
-		bool check_flag(const char flag) const
-		{
-			const auto it{ find(flag) };
-			return it != _args.end() && *it == Type::FLAG;
-		}
-
-		/**
-		 * @brief Check if a given argument was included, and has type Parameter.
-		 * @param param	- Parameter name to search for.
-		 * @returns bool
-		 */
-		bool check_param(const std::string& param) const
-		{
-			const auto it{ find(param) };
-			return it != _args.end() && *it == Type::PARAMETER;
-		}
-
-		// Insert all arguments in the list into an output stream.
-		friend std::ostream& operator<<(std::ostream& os, const Params& obj)
-		{
-			for (auto& it : obj._args)
-				os << it;
-			return os;
+			return getv(flag, _args.begin());
 		}
 
 		template<class T> std::vector<T> getAllWithTypeMatching(const std::string& name) const
@@ -309,6 +311,151 @@ namespace opt {
 			}
 			vec.shrink_to_fit();
 			return vec;
+		}
+	#pragma endregion GETTERS
+	#pragma region CHECK
+		/**
+		 * @brief Check if a given argument was included, regardless of its type.
+		 * @param arg	- Argument name to search for, not including any prefix dashes if applicable.
+		 * @returns bool
+		 */
+		bool check(const std::string& arg) const
+		{
+			return contains(arg);
+		}
+		bool check(const char arg) const
+		{
+			return contains(arg);
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, regardless of its type.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param arg	- Argument names to search for, not including any prefix dashes if applicable.
+		 * @returns bool
+		 */
+		template<class... T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check(const T&... args) const
+		{
+			return var::variadic_or(check(args)...);
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, regardless of its type.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param arg	- Argument names to search for, not including any prefix dashes if applicable.
+		 * @returns bool
+		 */
+		template<class... T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_all(const T&... args) const
+		{
+			return var::variadic_and(check(args)...);
+		}
+
+		/**
+		 * @brief Check if a given argument was included, and has type Option.
+		 * @param opt	- Option name to search for, not including the prefix dashes.
+		 * @returns bool
+		 */
+		bool check_opt(const std::string& opt) const
+		{
+			const auto it{ find(opt) };
+			return it != _args.end() && *it == Type::OPTION;
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Option.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param opts	- Argument names to search for, not including any prefix dashes.
+		 * @returns bool
+		 */
+		template<class ...T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_opt(const T&... opts) const
+		{
+			return var::variadic_or(check_opt(opts)...);
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Option.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param opts	- Argument names to search for, not including any prefix dashes.
+		 * @returns bool
+		 */
+		template<class ...T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_all_opt(const T&... opts) const
+		{
+			return var::variadic_and(check_opt(opts)...);
+		}
+
+		/**
+		 * @brief Check if a given argument was included, and has type Flag.
+		 * @param flag	- Flag char to search for.
+		 * @returns bool
+		 */
+		bool check_flag(const char flag) const
+		{
+			const auto it{ find(flag) };
+			return it != _args.end() && *it == Type::FLAG;
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Flag.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param flags	- Argument names to search for, not including any prefix dashes.
+		 * @returns bool
+		 */
+		template<class... T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_flag(const T... flags) const
+		{
+			return var::variadic_or(check_flag(flags)...);
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Flag.
+		 * @tparam T	- Variadic Templated Arguments
+		 * @param flags	- Argument names to search for, not including any prefix dashes.
+		 * @returns bool
+		 */
+		template<class... T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_all_flag(const T... flags) const
+		{
+			return var::variadic_and(check_flag(flags)...);
+		}
+
+		/**
+		 * @brief Check if a given argument was included, and has type Parameter.
+		 * @param param	- Parameter name to search for.
+		 * @returns bool
+		 */
+		bool check_param(const std::string& param) const
+		{
+			const auto it{ find(param) };
+			return it != _args.end() && *it == Type::PARAMETER;
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Parameter.
+		 * @tparam T	 - Variadic Templated Arguments
+		 * @param params - Argument names to search for.
+		 * @returns bool
+		 */
+		template<class...T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_param(const T&... params) const
+		{
+			return var::variadic_or(check_param(params)...);
+		}
+		/**
+		 * @brief Check if any one of an arbitrary number of given arguments was included, and has type Parameter.
+		 * @tparam T	 - Variadic Templated Arguments
+		 * @param params - Argument names to search for.
+		 * @returns bool
+		 */
+		template<class...T>
+		std::enable_if_t<(sizeof...(T) > 1), bool> check_all_param(const T&... params) const
+		{
+			return var::variadic_and(check_param(params)...);
+		}
+	#pragma endregion CHECK
+
+		// Insert all arguments in the list into an output stream.
+		friend std::ostream& operator<<(std::ostream& os, const Params& obj)
+		{
+			for (auto& it : obj._args)
+				os << it;
+			return os;
 		}
 	};
 }

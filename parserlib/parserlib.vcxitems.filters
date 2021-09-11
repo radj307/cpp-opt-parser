@@ -18,6 +18,7 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\optenv.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\resolve-path.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)var.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Opt Parser">

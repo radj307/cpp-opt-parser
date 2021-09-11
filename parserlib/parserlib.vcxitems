@@ -18,6 +18,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\resolve-path.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)parseArgs.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ParserConfig.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)var.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VariantArgument.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)format-argv.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Params.hpp" />
