@@ -1,7 +1,14 @@
+/**
+ * @file optenv.hpp
+ * @author radj307
+ * @brief opt Extension that provides support for environment variable parsing & usage. Requires the shared library.
+ */
 #pragma once
+#include <OPT_PARSER_LIB.h>
 #include <unordered_map>
 #include <strmanip.hpp>
 #include <strconv.hpp>
+#ifdef SHARED_LIB
 
 namespace opt {
 
@@ -56,10 +63,13 @@ namespace opt {
 			}
 			return vec;
 		}
-		
+
 		[[nodiscard]] bool empty() const
 		{
 			return _var.empty();
 		}
 	};
 }
+#else
+#error optenv.hpp requires the shared library!
+#endif

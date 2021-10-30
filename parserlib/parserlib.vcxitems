@@ -14,13 +14,17 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\optenv.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\resolve-path.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Help.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OPT_PARSER_LIB.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ParamsAPI.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)parseCapturedStream.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)optenv.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)parseArgs.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ParserConfig.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)var.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)resolve-path.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VariantArgument.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)format-argv.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)VariantType.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)vectorize.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Params.hpp" />
   </ItemGroup>
 </Project>

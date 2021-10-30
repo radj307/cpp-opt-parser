@@ -5,15 +5,15 @@ VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "parserlib", "parserlib\parserlib.vcxitems", "{D67CD0B3-39B2-4B74-944A-CF68A393AEDE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedLib", "..\_repo\shared library\SharedLib\SharedLib.vcxitems", "{25144A18-EE89-4CEB-92E5-FDACF4247449}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedLib", "..\shared library\SharedLib\SharedLib.vcxitems", "{25144A18-EE89-4CEB-92E5-FDACF4247449}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\parser.vcxproj", "{79651D54-E3D1-4300-A9FA-8FD69C1367D4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\_repo\shared library\SharedLib\SharedLib.vcxitems*{25144a18-ee89-4ceb-92e5-fdacf4247449}*SharedItemsImports = 9
-		parserlib\parserlib.vcxitems*{79651d54-e3d1-4300-a9fa-8fd69c1367d4}*SharedItemsImports = 4
-		..\_repo\shared library\SharedLib\SharedLib.vcxitems*{79651d54-e3d1-4300-a9fa-8fd69c1367d4}*SharedItemsImports = 4
+		parserlib\parserlib.vcxitems*{00c5f28a-ee03-40ba-b5cc-01d4125d42e4}*SharedItemsImports = 4
+		..\shared library\SharedLib\SharedLib.vcxitems*{00c5f28a-ee03-40ba-b5cc-01d4125d42e4}*SharedItemsImports = 4
+		..\shared library\SharedLib\SharedLib.vcxitems*{25144a18-ee89-4ceb-92e5-fdacf4247449}*SharedItemsImports = 9
 		parserlib\parserlib.vcxitems*{d67cd0b3-39b2-4b74-944a-cf68a393aede}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Debug|x64.ActiveCfg = Debug|x64
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Debug|x64.Build.0 = Debug|x64
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Debug|x86.ActiveCfg = Debug|Win32
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Debug|x86.Build.0 = Debug|Win32
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Release|x64.ActiveCfg = Release|x64
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Release|x64.Build.0 = Release|x64
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Release|x86.ActiveCfg = Release|Win32
-		{79651D54-E3D1-4300-A9FA-8FD69C1367D4}.Release|x86.Build.0 = Release|Win32
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Debug|x64.ActiveCfg = Debug|x64
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Debug|x64.Build.0 = Debug|x64
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Debug|x86.ActiveCfg = Debug|Win32
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Debug|x86.Build.0 = Debug|Win32
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Release|x64.ActiveCfg = Release|x64
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Release|x64.Build.0 = Release|x64
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Release|x86.ActiveCfg = Release|Win32
+		{00C5F28A-EE03-40BA-B5CC-01D4125D42E4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

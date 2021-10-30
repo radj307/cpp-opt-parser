@@ -1,9 +1,10 @@
 /**
- * @file format-argv.hpp
+ * @file vectorize.hpp
  * @author radj307
- * @brief	Contains the vectorize function, which simply turns a C-String array into a C++ std::string vector.
+ * @brief Contains the vectorize function, which simply turns a C-String array into a C++ std::string vector.
  */
 #pragma once
+#include <OPT_PARSER_LIB.h>
 #include <vector>
 #include <string>
 

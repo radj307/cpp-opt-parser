@@ -9,46 +9,13 @@
 #include <optional>
 #include <vector>
 #include <variant>
+#include <VariantType.hpp>
 
 namespace opt {
-
-	using Parameter = std::string;										///< @brief The type used to store parameters from the commandline in a VariantArgument.
-	using Option = std::pair<std::string, std::optional<std::string>>;	///< @brief The type used to store options (long-opts) from the commandline in a VariantArgument.
-	using Flag = std::pair<char, std::optional<std::string>>;			///< @brief The type used to store flags (short-opts) from the commandline in a VariantArgument.
-
-	using VariantType = std::variant<std::monostate, Parameter, Option, Flag>; ///< @brief The variant type used in VariantArgument. Monostate variant.
-
 	/**
-	 * @brief Contains the possible types of a VariantArgument. This is available so the implementation can identify which type a VariantArgument is without cumbersome std::get_if<>() function calls.
+	 * @struct VariantArgument
+	 * @brief Wrapper object for VariantType, allows types Parameter, Option, or Flag.
 	 */
-	enum class Type {
-		NULL_TYPE,
-		PARAMETER,	///< @brief Corresponds to the Parameter type.
-		OPTION,		///< @brief Corresponds to the Option type.
-		FLAG		///< @brief Corresponds to the Flag type.
-	};
-
-	/**
-	 * @brief Retrieve an enumerator representing the index of a given variant.
-	 * @param var	- A type-variant variable.
-	 * @returns Type
-	 */
-	inline Type determineVariantType(const VariantType& var)
-	{
-		switch (var.index()) {
-		case 0: // type is std::monostate
-			return Type::NULL_TYPE;
-		case 1: // type is Parameter
-			return Type::PARAMETER;
-		case 2: // type is Option
-			return Type::OPTION;
-		case 3: // type is Flag
-			return Type::FLAG;
-		default:
-			throw std::exception("Unknown variant index! (Was a type added?)");
-		}
-	}
-
 	struct VariantArgument {
 	private:
 		VariantType _arg; ///< @brief The argument of this instance, stored in a std::variant.
@@ -65,11 +32,9 @@ namespace opt {
 		 * @returns std::string
 		 *\n	If the returned string is blank, this argument is null.
 		 */
-		std::string name() const
+		std::string name() const noexcept
 		{
-			if (_arg.valueless_by_exception())
-				return{};
-			switch (_type) {
+			switch ( _type ) {
 			case Type::PARAMETER:
 				return get<Parameter>();
 			case Type::OPTION:
@@ -169,7 +134,7 @@ namespace opt {
 		 */
 		template<class T> std::enable_if_t<std::is_same_v<T, Option>, std::optional<std::string>> getv() const
 		{
-			return get<Option>().second.value();
+			return get<Option>().second;
 		}
 
 		std::optional<std::string> getv() const
@@ -200,7 +165,7 @@ namespace opt {
 		 */
 		bool operator!=(const VariantArgument& o) const
 		{
-			return _type == o._type && _arg == o._arg;
+			return !this->operator==(o);
 		}
 		/**
 		 * @brief Compare this VariantArgument instance's type against a given type.
@@ -218,7 +183,7 @@ namespace opt {
 		 */
 		bool operator!=(const Type& o) const
 		{
-			return _type != o;
+			return !this->operator==(o);
 		}
 
 		/**
@@ -252,6 +217,7 @@ namespace opt {
 			obj._type = determineVariantType(obj._arg);
 			return is;
 		}
+
 		/**
 		 * @brief Insert the value & potential capture value of this VariantArgument instance.
 		 * @param os	- Output stream instance.
@@ -260,18 +226,35 @@ namespace opt {
 		 */
 		friend std::ostream& operator<<(std::ostream& os, const VariantArgument& obj)
 		{
-			switch (obj._type) {
-			case Type::PARAMETER:
-				os << obj.get<Parameter>();
-				break;
-			case Type::OPTION:
-				os << obj.get<Option>().first;
-				break;
-			case Type::FLAG:
-				os << obj.get<Flag>().first;
+			using enum Type;
+			switch ( obj._type ) {
+			case OPTION:
+				os << '-';
+				[[fallthrough]];
+			case FLAG:
+				os << '-';
+				[[fallthrough]];
+			case PARAMETER: [[fallthrough]];
+			default:
+				os << obj.name();
 				break;
 			}
 			return os;
+		}
+
+		operator VariantType() const { return _arg; }
+
+		explicit operator Parameter() const
+		{
+			return std::get<Parameter>(_arg);
+		}
+		explicit operator Option() const
+		{
+			return std::get<Option>(_arg);
+		}
+		explicit operator Flag() const
+		{
+			return std::get<Flag>(_arg);
 		}
 	};
 }

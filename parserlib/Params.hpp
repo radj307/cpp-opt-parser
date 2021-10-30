@@ -11,11 +11,16 @@
  *\n	This implementation uses 146% less memory than optlib.hpp
  */
 #pragma once
+#include <OPT_PARSER_LIB.h>
 #include <var.hpp>
-#include "format-argv.hpp"
-#include "parseArgs.hpp"
+#include <vectorize.hpp>
+#include <parseArgs.hpp>
+#include <VariantArgument.hpp>
+
+// TODO: Implement a templated-key-based method of referring to arguments, rather than passing the arguments name as a string. Similar to the color::ColorPalette lib.
 
 namespace opt {
+
 	/**
 	 * @class Params
 	 * @brief Contains the list of arguments stored as variant types in a protected vector.
@@ -23,16 +28,22 @@ namespace opt {
 	class Params {
 	protected:
 		ContainerType _args;
+		std::string _arg0;
+
+	//	template<class T>
+	//	struct is_arg_t : test::is_any_v<T, Parameter, Option, Flag> {};
 
 	public:
+		using VInput = std::variant<std::string, char>;
 		/**
 		 * @brief Constructor that takes argc & argv directly from main, and a parse_config instance.
 		 * @param argc			- Argument array size.
 		 * @param argv			- Argument array.
 		 * @param parse_config	- Parsing configuration values.
 		 */
-		explicit Params(const int argc, char** argv, const ParserConfig& parse_config) : _args{ parseArgs(vectorize(argc, argv), parse_config) } {}
-		explicit Params(const int argc, char** argv, const std::vector<std::string>& capture_list) : _args{ parseArgs(vectorize(argc, argv), capture_list) } {}
+		explicit Params(const int argc, char** argv, const ParserConfig& parse_config) : _args{ parseArgs(vectorize(argc, argv), parse_config) }, _arg0{ argv[0] } {}
+		explicit Params(const int argc, char** argv, const std::vector<std::string>& capture_list) : _args{ parseArgs(vectorize(argc, argv), capture_list) }, _arg0{ argv[0] } {}
+		explicit Params(const int argc, char** argv) : _args{ parseArgs(vectorize(argc, argv)) }, _arg0{ argv[0] } {}
 		explicit Params(ContainerType cont) : _args{ std::move(cont) } {}
 
 		auto begin() const -> ContainerType::const_iterator { return _args.begin(); }
@@ -41,6 +52,8 @@ namespace opt {
 		auto rend() const -> ContainerType::const_reverse_iterator { return _args.rend(); }
 		auto at(const ContainerType::size_type& pos) const -> VariantArgument { return _args.at(pos); }
 		bool empty() const { return _args.empty(); }
+
+		std::string argv0() const { return _arg0; }
 
 	#pragma region FIND
 		/**
@@ -156,12 +169,7 @@ namespace opt {
 		}
 		std::vector<ContainerType::const_iterator> findAll(const std::string& arg) const
 		{
-			std::vector<ContainerType::const_iterator> vec;
-			vec.reserve(_args.size());
-			for (auto it{ find(arg, _args.begin()) }; it != _args.end(); it = find(arg, it + 1u))
-				vec.emplace_back(it);
-			vec.shrink_to_fit();
-			return vec;
+			return findAll(arg, _args.begin());
 		}
 		std::vector<ContainerType::const_iterator> findAll(const char arg, const ContainerType::const_iterator& off) const
 		{
@@ -174,12 +182,7 @@ namespace opt {
 		}
 		std::vector<ContainerType::const_iterator> findAll(const char arg) const
 		{
-			std::vector<ContainerType::const_iterator> vec;
-			vec.reserve(_args.size());
-			for (auto it{ find(arg, _args.begin()) }; it != _args.end(); it = find(arg, it + 1u))
-				vec.emplace_back(it);
-			vec.shrink_to_fit();
-			return vec;
+			return findAll(arg, _args.begin());
 		}
 	#pragma endregion FINDALL
 	#pragma region CONTAINS
@@ -262,6 +265,13 @@ namespace opt {
 			return getAllWithType<Parameter>();
 		}
 
+		/**
+		 * @brief Get the captured argument for a given option.
+		 * @param opt	- Option name, excluding dash prefix.
+		 * @param off	- Position in the option container to begin searching from. Inclusive.
+		 * @returns std::optional<std::string>
+		 *\n		std::nullopt	- No option found with the given type!
+		 */
 		std::optional<std::string> getv(const std::string& opt, ContainerType::const_iterator off) const
 		{
 			if (off == _args.end())
@@ -448,13 +458,30 @@ namespace opt {
 		{
 			return var::variadic_and(check_param(params)...);
 		}
+
+		template<class Type, class... T>
+		std::enable_if_t<(sizeof...(T) > 0) && std::is_same_v<Type, Option>, bool> check(const T&... args) const
+		{
+			return check_opt(args...);
+		}
+
+		template<class Type, class... T>
+		std::enable_if_t<(sizeof...(T) > 0) && std::is_same_v<Type, Flag>, bool> check(const T&... args) const
+		{
+			return check_flag(args...);
+		}
+		template<class Type, class... T>
+		std::enable_if_t<(sizeof...(T) > 0) && std::is_same_v<Type, Parameter>, bool> check(const T&... args) const
+		{
+			return check_param(args...);
+		}
 	#pragma endregion CHECK
 
 		// Insert all arguments in the list into an output stream.
 		friend std::ostream& operator<<(std::ostream& os, const Params& obj)
 		{
 			for (auto& it : obj._args)
-				os << it;
+				os << it << ' ';
 			return os;
 		}
 	};

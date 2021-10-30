@@ -5,9 +5,8 @@
  */
 #pragma once
 #include <sstream>
-#include <strmanip.hpp>
-#include "VariantArgument.hpp"
-#include "ParserConfig.hpp"
+#include <VariantArgument.hpp>
+#include <ParserConfig.hpp>
 
 namespace opt {
 	using ContainerType = std::vector<VariantArgument>;
@@ -20,7 +19,7 @@ namespace opt {
 	 * @param include_delims - When true, includes prefix delimiters in the argument name
 	 * @returns ContainerType
 	 */
-	inline ContainerType parseArgs(const std::vector<std::string>& args, const ParserConfig& cfg)
+	inline ContainerType parseArgs(const std::vector<std::string>& args, const ParserConfig& cfg = {})
 	{
 		ContainerType cont;
 		cont.reserve(args.size()); // reserve enough space for all arguments should no captures occur.
@@ -42,16 +41,20 @@ namespace opt {
 			}
 			case 1u: { // Flag
 				std::string arg{ *it };
-				for (auto ch{ arg.begin() + dashCount }; ch != arg.end(); ++ch) {
-					if (it + 1u < args.end()
-						&& cfg.allowCapture(*ch)
-						&& !cfg.isDelim((it + 1u)->at(0u))
-					)
-						cont.emplace_back(std::make_pair(*ch, *++it)); // flag with capture
-					else
-						cont.emplace_back(std::make_pair(*ch, std::nullopt)); // flag without capture
+				// if not a negative number, parse as a flag
+				if (!std::all_of(arg.begin() + dashCount, arg.end(), [](auto&& ch) { return isdigit(ch) || ch == '.'; })) {
+					for (auto ch{ arg.begin() + dashCount }; ch != arg.end(); ++ch) {
+						if (it + 1u < args.end()
+							&& cfg.allowCapture(*ch)
+							&& !cfg.isDelim((it + 1u)->at(0u))
+							)
+							cont.emplace_back(std::make_pair(*ch, *++it)); // flag with capture
+						else
+							cont.emplace_back(std::make_pair(*ch, std::nullopt)); // flag without capture
+					}
+					break;
 				}
-				break;
+				[[fallthrough]];
 			}
 			case 0u: { // Parameter
 				cont.emplace_back(*it); // parameter

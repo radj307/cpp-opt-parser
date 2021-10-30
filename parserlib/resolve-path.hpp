@@ -4,13 +4,15 @@
  * @brief Contains helper methods for parsing argv[0] to resolve the location of the currently running executable. Also functions as a basic whereis command.
  */
 #pragma once
-#include <file.h>
+#include <OPT_PARSER_LIB.h>
+#include <file.h>		///< @brief Requires file.h from sharedlib!
 #include <optenv.hpp>
+#ifdef SHARED_LIB
 
 namespace opt {
 	/**
 	 * @function split_arg(const std::string&, const std::string& = "./\")
-	 * @brief Splits the string found in argv[0] by the path, and name used to call the program.
+	 * @brief Splits a filepath between the filename and path to that file.
 	 * @param arg			- argv[0] from main() or another patch to resolve.
 	 * @param delimiters	- Path delimiters.
 	 * @returns std::pair<std::string, std::string>
@@ -80,3 +82,6 @@ namespace opt {
 		return path + name;
 	}
 }
+#else
+#error resolve-path.hpp requires the shared library!
+#endif

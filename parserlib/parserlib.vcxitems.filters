@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)format-argv.hpp">
+    <ClInclude Include="$(MSBuildThisFileDirectory)vectorize.hpp">
       <Filter>Opt Parser\Internal</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)parseArgs.hpp">
@@ -16,9 +16,25 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ParserConfig.hpp">
       <Filter>Opt Parser\Internal</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\optenv.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\_repo\shared library\SharedLib\resolve-path.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)var.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)parseCapturedStream.hpp">
+      <Filter>Opt Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)OPT_PARSER_LIB.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)optenv.hpp">
+      <Filter>Environment Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)resolve-path.hpp">
+      <Filter>Environment Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Help.hpp">
+      <Filter>CLI Help Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ParamsAPI.hpp">
+      <Filter>Opt Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VariantType.hpp">
+      <Filter>Opt Parser\Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Opt Parser">
@@ -26,6 +42,12 @@
     </Filter>
     <Filter Include="Opt Parser\Internal">
       <UniqueIdentifier>{01b66c35-8b83-4663-849f-ff4aa4c16b80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Environment Parsers">
+      <UniqueIdentifier>{f8efcb44-1135-4244-9098-7e3e98df4f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLI Help Utils">
+      <UniqueIdentifier>{cab5e5ba-0cae-4fa7-a031-8d0c31eeec60}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

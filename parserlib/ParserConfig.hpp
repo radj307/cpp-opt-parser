@@ -9,6 +9,7 @@
 #include <strmanip.hpp>
 
 namespace opt {
+	inline static const std::string _DEFAULT_OPT_DELIMITERS{ "-" };
 	/**
 	 * @struct ParserConfig
 	 * @brief Contains variables and methods required by the parseArgs function.
@@ -16,9 +17,10 @@ namespace opt {
 	struct ParserConfig {
 		std::vector<std::string> _capture_list; ///< @brief Any strings present on this list will be able to capture arguments the occur directly after them, so long as they are not arguments as well. Both flags (as single character strings) and opts can be specified here.
 		std::string _type_delims;	///< @brief By default, '-' is accepted as a prefix argument. 1 dash is a short-opt, or flag, and each character is parsed individually. 2 dashes is a long-opt and is treated as a single argument.
+		bool _allow_negative_numbers{ true }; ///< @brief When true, if an argument prefixed with '-' is entirely digits and/or '.' characters, it is treated as a Parameter, not a flag.
 
-		ParserConfig(std::vector<std::string> capture_list, std::string delims = "-") : _capture_list{ std::move(capture_list) }, _type_delims{ std::move(delims) } {}
-		ParserConfig() : ParserConfig({}, "-") {}
+		ParserConfig() : ParserConfig({}, _DEFAULT_OPT_DELIMITERS) {}
+		ParserConfig(std::vector<std::string> capture_list, std::string delims = _DEFAULT_OPT_DELIMITERS) : _capture_list{std::move(capture_list)}, _type_delims{std::move(delims)} {}
 
 		/**
 		 * @brief Check if a given char is a valid delimiter.
