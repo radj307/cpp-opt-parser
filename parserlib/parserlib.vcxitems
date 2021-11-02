@@ -4,6 +4,7 @@
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <ItemsProjectGuid>{d67cd0b3-39b2-4b74-944a-cf68a393aede}</ItemsProjectGuid>
+    <ItemsProjectName>opt-parser-lib</ItemsProjectName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -15,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Help.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)optAPI.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)OPT_PARSER_LIB.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ParamsAPI.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)parseCapturedStream.hpp" />

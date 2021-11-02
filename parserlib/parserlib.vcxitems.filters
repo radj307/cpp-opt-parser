@@ -35,6 +35,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)VariantType.hpp">
       <Filter>Opt Parser\Internal</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)optAPI.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Opt Parser">

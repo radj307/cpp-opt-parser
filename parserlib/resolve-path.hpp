@@ -21,7 +21,7 @@ namespace opt {
 	 */
 	inline std::pair<std::string, std::string> split_path(const std::string& arg, const std::string& delimiters = "/\\")
 	{
-		if ( const auto dPos{ arg.find_last_of(delimiters) }; str::pos_valid(dPos) )
+		if (const auto dPos{ arg.find_last_of(delimiters) }; str::pos_valid(dPos))
 			return { arg.substr(0u, dPos + 1u), arg.substr(dPos + 1u) };
 		return { {}, arg };
 	}
@@ -39,16 +39,16 @@ namespace opt {
 	 */
 	inline std::pair<std::string, std::string> resolve_split_path(const std::vector<std::string>& PATH, const std::string& arg, const std::vector<std::string>& extensions = { ".exe", ".bat", ".so" }, const char pathDelim = '/')
 	{
-		const auto [path, name]{ split_path(arg) };
-		if ( !path.empty() && !str::pos_valid(path.find('.')) )
+		const auto [path, name] { split_path(arg) };
+		if (!path.empty() && !str::pos_valid(path.find('.')))
 			return{ path, name }; // return absolute path
 		// iterate through PATH env var
 		for (auto& it : PATH) {
 			std::string target(it + pathDelim);
-			if ( file::exists(target + arg) )
+			if (file::exists(target + arg))
 				return { target, arg };
-			for ( auto& ext : extensions )
-				if ( file::exists(std::string{target + arg}.append(ext)) )
+			for (auto& ext : extensions)
+				if (file::exists(std::string{ target + arg }.append(ext)))
 					return { target, { arg + ext } };
 		}
 		return { {}, arg }; // return not found
@@ -63,9 +63,9 @@ namespace opt {
 	 *\n		first	- The path to the directory where this program is located, including a trailing slash.
 	 *\n		second	- The name used to call this program.
 	 */
-	inline std::pair<std::string, std::string> resolve_split_path(char* envp[], const std::string& arg)
+	inline std::pair<std::string, std::string> resolve_split_path(char** envp, const std::string& arg)
 	{
-		return resolve_split_path(Environment{ envp }.getPath(), arg);
+		return resolve_split_path(Env{ envp }.PATH(), arg);
 	}
 
 	/**
@@ -78,7 +78,7 @@ namespace opt {
 	 */
 	template<class T> static std::string resolve_path(T&& env, const std::string& arg)
 	{
-		const auto [path, name]{ resolve_split_path(std::forward<T>(env), arg) };
+		const auto [path, name] { resolve_split_path(std::forward<T>(env), arg) };
 		return path + name;
 	}
 }

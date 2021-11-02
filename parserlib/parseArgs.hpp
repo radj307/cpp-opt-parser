@@ -41,8 +41,8 @@ namespace opt {
 			}
 			case 1u: { // Flag
 				std::string arg{ *it };
-				// if not a negative number, parse as a flag
-				if (!std::all_of(arg.begin() + dashCount, arg.end(), [](auto&& ch) { return isdigit(ch) || ch == '.'; })) {
+				// if not a negative number & not a negative hexadecimal number, parse as a flag
+				if (const bool hex_prefix{ arg.substr(dashCount, 2ull) == "0x" }; !hex_prefix && !std::all_of(arg.begin() + dashCount + (hex_prefix ? 2ull : 0ull), arg.end(), [](auto&& ch) { return isdigit(ch) || ch == '.'; })) {
 					for (auto ch{ arg.begin() + dashCount }; ch != arg.end(); ++ch) {
 						if (it + 1u < args.end()
 							&& cfg.allowCapture(*ch)
@@ -54,7 +54,7 @@ namespace opt {
 					}
 					break;
 				}
-				[[fallthrough]];
+				[[fallthrough]]; // if arg was a negative number or negative hexadecimal number
 			}
 			case 0u: { // Parameter
 				cont.emplace_back(*it); // parameter
